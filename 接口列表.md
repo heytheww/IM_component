@@ -18,7 +18,7 @@
 【注意】这是只是一个微信公众号系统对接模块，展示一种技术对接方式，不涉及具体业务实现。
 
 # 接口列表
-1. 连接socket & 从系统接收消息
+## 1. 连接socket & 从系统接收消息
 wss://abc.com/im_component/wx_official_account/msg?userid=xxx
 
 【收到消息格式】
@@ -143,7 +143,7 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
 【发送消息格式】
 
 
-2. 向系统推送消息（JSON）
+## 2. 向系统推送消息（JSON）
 2.1 JSON
 http://abc.com/im_component/wx_official_account/send
 [POST]
@@ -176,11 +176,11 @@ text消息
 ```
 其他类型普通消息，仅msg_type和code不同，不赘述。
 
-3. 关于websocket连接的管理
+## 3. 关于websocket连接的管理
 每一个连接请求通过HandleFunc注册的Handler处理，http包会开启一个协程以保证并发需要，然后建立连接后，该Handler不结束，一直监听该连接，直到连接close，该Handler函数结束执行。
 【注意】不要尝试着把连接保存起来，然后另开一个函数轮询监听该连接，这样是行不通的。
 
-4. 测试方式
+## 4. 测试方式
 向 localhost:1234/send 发送 post
 body为：
 ```
