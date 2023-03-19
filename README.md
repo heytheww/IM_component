@@ -154,7 +154,8 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
 ```
 
 【发送消息格式】
-<br />  
+
+<br/>  
   
 ## 2. 向系统推送消息（JSON）
 2.1 JSON
@@ -188,6 +189,7 @@ text消息
 </xml>
 ```
 其他类型普通消息，仅msg_type和code不同，不赘述。
+
 <br />
 
 ## 3. 关于websocket连接的管理
@@ -196,7 +198,9 @@ text消息
 <br />
 
 ## 4. 测试方式
-向 localhost:1234/send 发送 post
+目前测试的contact_id为1，也是发送xml消息的ToUserName，也是chrome登录的userId。通过go的map维护了一组消息缓存，用于发送xml消息和websocket监听解耦，也避免 多个goroutine同时使用reader发送消息导致 nil指针 的错误。  
+
+向 localhost:1234/send 发送 post  
 body为：
 ```
 <xml>
