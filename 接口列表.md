@@ -240,3 +240,17 @@ chrome使用如下代码连接websocket
 </html>
 
 ```
+
+【可使用go发布该html】
+```
+package main
+
+import (
+	"net/http"
+)
+
+func main() {
+	http.ListenAndServe("localhost:8080", http.FileServer(http.Dir(".")))
+}
+
+```
