@@ -10,8 +10,8 @@ import (
 )
 
 type Server struct {
-	ConnMax     int
 	KeepAliving bool
+	MsgBuffer   map[string][][]byte // 字节数组的数组
 }
 
 var upgrader = websocket.Upgrader{
@@ -26,39 +26,56 @@ var upgrader = websocket.Upgrader{
 
 func (e *Server) Handler(w http.ResponseWriter, r *http.Request) {
 
-	if e.ConnMax+1 > 10 {
-		// w.Write()
-	}
 	conn, err := upgrader.Upgrade(w, r, nil)
-	// defer conn.Close()
+
 	// 连接建立失败
 	if err != nil {
 		log.Printf("%v", err)
 		return
 	}
 
-	// websocket 连接成功，进入websocket持续监听
-	// 心跳
-	go Ping(conn)
-	conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	// websocket 连接成功
+	userId := r.URL.Query().Get("userId")
+
+	// 进入websocket持续监听
+	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 
 	for {
-		<-time.After(3 * time.Second)
-		msg, err := GetMsg(conn)
+		<-time.After(5 * time.Second)
+
+		go func() {
+			msg, err := GetMsg(conn)
+			if err != nil {
+				conn.Close()
+			}
+			fmt.Printf("%s", msg)
+		}()
+
+		if len(e.MsgBuffer[userId]) > 0 {
+			for _, v := range e.MsgBuffer[userId] {
+				err = SendMsg(conn, v)
+				if err != nil {
+					conn.Close()
+				}
+			}
+
+			e.MsgBuffer[userId] = make([][]byte, 0)
+		}
+
+		// 心跳保活
+		err := conn.WriteMessage(websocket.TextMessage, []byte("ping"))
 		if err != nil {
+			fmt.Println("连接已断开")
 			conn.Close()
 			break
+		} else {
+			// 连接再保持10秒
+			conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 		}
-		err = SendMsg(conn, msg)
-		if err != nil {
-			conn.Close()
-			break
-		}
-		fmt.Printf("%s", msg)
 	}
 }
 
-func Ping(conn *websocket.Conn) {
+func Ping(conn *websocket.Conn, ch chan int) {
 
 	for {
 		// 每1s发一次心跳，保活
@@ -87,7 +104,7 @@ func GetMsg(conn *websocket.Conn) (string, error) {
 	return string(p), nil
 }
 
-func SendMsg(conn *websocket.Conn, message string) error {
+func SendMsg(conn *websocket.Conn, message []byte) error {
 	err := conn.WriteMessage(websocket.TextMessage, []byte(message))
 	if err != nil {
 		return err
