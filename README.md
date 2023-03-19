@@ -13,7 +13,7 @@
 参考文档：  
 【1】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html  
 【2】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html  
-【3】https://github.com/nhooyr/websocket/blob/master/examples/chat/main.go
+【3】https://github.com/gorilla/websocket/tree/master/examples
 
 【注意】这是只是一个微信公众号系统对接模块，展示一种技术对接方式，不涉及具体业务实现。
 
