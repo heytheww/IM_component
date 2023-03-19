@@ -1,6 +1,6 @@
 # 业务-技术-逻辑
-本模块基本逻辑：
-1.用户发送消息->微信转发到系统->系统转发到上线客服->客户在48小时内回复->系统转发到微信->微信转发到用户。
+本模块基本逻辑：  
+1.用户发送消息->微信转发到系统->系统转发到上线客服->客户在48小时内回复->系统转发到微信->微信转发到用户。  
 简化模式：
 用户->微信->xml->系统->JSON->客服（xml格式由微信定义）
 客服->JSON->系统->xml->微信->用户
@@ -10,9 +10,9 @@
 3.对于用户发送的多媒体文件，系统先进行转存转格式，再把url给客服。
 4.在系统中用一个map维护 用户-客服 关系，形成 联系人列表，用户-客服 是多对一。
 
-参考文档：
-【1】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html
-【2】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
+参考文档：  
+【1】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html  
+【2】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html  
 【3】https://github.com/nhooyr/websocket/blob/master/examples/chat/main.go
 
 【注意】这是只是一个微信公众号系统对接模块，展示一种技术对接方式，不涉及具体业务实现。
@@ -23,6 +23,7 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
 
 【收到消息格式】
 1.1 系统消息
+```
 {
     "data":{
         "id": "", // 消息id
@@ -39,10 +40,11 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"common"
     }
 }
-
+```
 
 1.2 普通消息
 1.2.1 text消息
+```
 {
     "data":{
         "id": "", // 消息id
@@ -61,8 +63,10 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"common"
     }
 }
+```
 
 1.2.2 image消息
+```
 {
     "data":{
         "id": "", // 消息id
@@ -81,8 +85,10 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"common"
     }
 }
+```
 
 1.2.2 voice消息
+```
 {
     "data":{
         "id": "", // 消息id
@@ -101,8 +107,10 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"common"
     }
 }
+```
 
 1.2.2 video消息
+```
 {
     "data":{
         "id": "", // 消息id
@@ -121,8 +129,10 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"common"
     }
 }
+```
 
 1.3 心跳消息
+```
 {
     "data":{},
     "result":{
@@ -130,8 +140,10 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"heartbeat"
     }
 }
+```
 
 1.4 错误消息（预留）
+```
 {
     "data":{},
     "result":{
@@ -139,10 +151,11 @@ wss://abc.com/im_component/wx_official_account/msg?userid=xxx
         "message":"error"
     }
 }
+```
 
 【发送消息格式】
-
-
+<br />  
+  
 ## 2. 向系统推送消息（JSON）
 2.1 JSON
 http://abc.com/im_component/wx_official_account/send
@@ -175,10 +188,12 @@ text消息
 </xml>
 ```
 其他类型普通消息，仅msg_type和code不同，不赘述。
+<br />
 
 ## 3. 关于websocket连接的管理
 每一个连接请求通过HandleFunc注册的Handler处理，http包会开启一个协程以保证并发需要，然后建立连接后，该Handler不结束，一直监听该连接，直到连接close，该Handler函数结束执行。
-【注意】不要尝试着把连接保存起来，然后另开一个函数轮询监听该连接，这样是行不通的。
+【注意】不要尝试着把连接保存起来，然后另开一个函数轮询监听该连接，这样是行不通的。  
+<br />
 
 ## 4. 测试方式
 向 localhost:1234/send 发送 post
