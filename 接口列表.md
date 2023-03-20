@@ -4,11 +4,11 @@
 简化模式：
 用户->微信->xml->系统->JSON->客服（xml格式由微信定义）
 客服->JSON->系统->xml->微信->用户
-本模块，现在只实现：JSON/XML -> 系统 -> JSON，并对微信定义的XML格式进行简化。
-
+本模块，现在只实现：XML -> 系统 -> JSON，并对微信定义的XML格式进行简化。
 2.客服和系统通过socket通信。
 3.对于用户发送的多媒体文件，系统先进行转存转格式，再把url给客服。
-4.在系统中用一个map维护 用户-客服 关系，形成 联系人列表，用户-客服 是多对一。
+4.在系统中用一个map维护 接收者-消息 关系，形成 接收者形成联系人列表，接收者-消息 是一对多。
+5.若需要持久化消息，可以使用一个 消息队列 以接收者id为主键，异步保存到mysql。
 
 参考文档：  
 【1】https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Service_Center_messages.html  
